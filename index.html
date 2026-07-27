@@ -3,44 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>HERMES Gateway Command Center</title>
+<title>HERMES Cyber Core MiniApp</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0f;--card:#12121f;--border:#1e1e3a;--cyan:#00f3ff;--purple:#a855f7;--green:#00ff88;--red:#ff4757;--yellow:#ffd93d}
-body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:#fff;padding-bottom:80px;font-size:12px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#07070a;--card:#0f0f18;--border:#1a1a2e;--cyan:#00f3ff;--purple:#9d4edd;--green:#00ff88;--red:#ff0055;--text:#e2e8f0}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);padding-bottom:80px;font-size:12px;overflow-x:hidden}
 .wrap{max-width:480px;margin:0 auto;padding:12px}
-.glass{background:rgba(18,18,31,.9);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px;backdrop-filter:blur(10px)}
+.glass{background:rgba(15,15,24,.85);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;backdrop-filter:blur(12px)}
 .hdr{display:flex;justify-content:space-between;align-items:center}
 .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);display:inline-block;margin-left:6px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .pulse.offline{background:var(--red);box-shadow:0 0 10px var(--red)}
-.title{font-weight:900;background:linear-gradient(to left,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:14px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
-.stat-box{background:#080810;padding:10px;border-radius:12px;border:1px solid var(--border)}
-.progress-bg{width:100%;height:6px;background:#1a1a2e;border-radius:3px;margin-top:6px;overflow:hidden}
-.progress-fill{height:100%;background:var(--cyan);width:0%;transition:width .5s;border-radius:3px}
-.btn{width:100%;padding:10px;border-radius:10px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--cyan),#0088aa);color:#000;font-family:'Vazirmatn';font-size:13px;transition:all .2s}
-.btn:hover{transform:scale(1.02);box-shadow:0 0 20px rgba(0,243,255,.3)}
-.btn:active{transform:scale(.98)}
-.btn.danger{background:linear-gradient(135deg,var(--red),#cc2233)}
-.code-box{background:#050508;border:1px solid var(--border);border-radius:10px;padding:8px;font-family:'Fira Code',monospace;direction:ltr;color:var(--green);width:100%;height:160px;outline:none;resize:none;font-size:11px}
-.code-box:focus{border-color:var(--cyan)}
-.inp{width:100%;padding:8px;background:#050508;border:1px solid var(--border);border-radius:8px;color:#fff;margin-bottom:8px;font-family:'Vazirmatn'}
-.inp:focus{border-color:var(--cyan);outline:none}
-.console{background:#000;border:1px solid var(--border);padding:8px;font-family:'Fira Code',monospace;font-size:10px;color:var(--cyan);height:80px;overflow-y:auto;direction:ltr;border-radius:8px;margin-top:6px;white-space:pre-wrap;word-break:break-all}
-.section-title{font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.tab-bar{display:flex;gap:6px;margin-bottom:12px}
-.tab{flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:#666;font-weight:700;cursor:pointer;font-family:'Vazirmatn';font-size:12px;transition:all .2s}
-.tab.active{background:var(--cyan);color:#000;border-color:var(--cyan)}
-.server-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.info-item{background:#080810;padding:8px;border-radius:8px;font-size:10px;color:#888}
-.info-item span{color:var(--cyan);font-weight:700}
-.loading{text-align:center;padding:20px;color:#666}
-.cron-item{background:#080810;padding:8px;border-radius:8px;margin-bottom:6px;font-size:11px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)}
-.cron-item .name{color:var(--yellow);font-weight:700}
-.cron-item .schedule{color:var(--cyan);font-family:'Fira Code',monospace;font-size:10px}
+.title{font-weight:900;background:linear-gradient(to left,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Tabs Nav */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.tab-btn{padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#888;font-weight:700;cursor:pointer;text-align:center;font-size:11px;transition:all .2s}
+.tab-btn.active{background:rgba(0,243,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.page{display:none}.page.active{display:block}
+
+/* System Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.stat-card{background:#0a0a12;padding:8px;border-radius:10px;border:1px solid var(--border)}
+.bar-bg{width:100%;height:4px;background:#18182a;border-radius:2px;margin-top:4px;overflow:hidden}
+.bar-fill{height:100%;width:0%;background:var(--cyan);transition:width .4s}
+
+/* Forms & Inputs */
+.inp{width:100%;padding:10px;background:#090910;border:1px solid var(--border);border-radius:8px;color:#fff;margin-bottom:8px;font-family:'Vazirmatn';font-size:11px;outline:none}
+.inp:focus{border-color:var(--cyan)}
+.btn{width:100%;padding:10px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-family:'Vazirmatn';font-size:11px;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.btn:active{transform:scale(.97)}
+.btn-cyan{background:linear-gradient(135deg,var(--cyan),#0088aa);color:#000}
+.btn-red{background:rgba(255,0,85,.2);color:var(--red);border:1px solid var(--red)}
+
+/* Cron Item */
+.cron-card{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#090910;border-radius:10px;border:1px solid var(--border);margin-bottom:6px}
+.badge{padding:2px 6px;border-radius:4px;font-size:8px;font-weight:700}
+.badge-active{background:rgba(0,255,136,.15);color:var(--green);border:1px solid var(--green)}
+.badge-disabled{background:rgba(255,0,85,.15);color:var(--red);border:1px solid var(--red)}
+
+/* Chat Area */
+.chat-box{height:250px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:8px;background:#06060a;border-radius:10px;border:1px solid var(--border);margin-bottom:8px}
+.msg{max-width:80%;padding:8px 12px;border-radius:12px;font-size:11px;line-height:1.4}
+.msg-hermes{align-self:flex-start;background:#121225;color:var(--cyan);border-bottom-right-radius:2px}
+.msg-user{align-self:flex-end;background:linear-gradient(135deg,var(--purple),#5b21b6);color:#fff;border-bottom-left-radius:2px}
+.msg-time{font-size:8px;opacity:.6;margin-top:2px;text-align:left}
 </style>
 </head>
 <body>
@@ -48,258 +57,195 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:#fff;padding-
 
   <!-- HEADER -->
   <div class="glass hdr">
-    <div>
-      <span class="pulse" id="statusDot"></span>
-      <span class="title">HERMES GATEWAY</span>
-    </div>
-    <div style="font-size:9px;color:#666" id="syncStatus">⚡ Connecting...</div>
+    <div><span class="pulse" id="statusDot"></span><span class="title">HERMES CYBER GATEWAY</span></div>
+    <div style="font-size:9px;color:#666" id="syncStatus">درحال اتصال...</div>
   </div>
 
-  <!-- TAB BAR -->
-  <div class="tab-bar">
-    <button class="tab active" onclick="switchTab('stats')">📊 آمار</button>
-    <button class="tab" onclick="switchTab('editor')">📝 ادیتور</button>
-    <button class="tab" onclick="switchTab('logs')">📟 لاگ</button>
-    <button class="tab" onclick="switchTab('cron')">⏰ کرون</button>
+  <!-- NAVIGATION TABS -->
+  <div class="tabs">
+    <div class="tab-btn active" onclick="switchTab('crons', this)">⚡ کرون‌جاب‌ها</div>
+    <div class="tab-btn" onclick="switchTab('chat', this)">💬 مدیریت چت</div>
+    <div class="tab-btn" onclick="switchTab('system', this)">📊 وضعیت سرور</div>
   </div>
 
-  <!-- TAB: STATS -->
-  <div id="tab-stats" class="tab-content">
+  <!-- PAGE 1: CRON JOBS -->
+  <div id="page-crons" class="page active">
     <div class="glass">
-      <div class="section-title">📊 پایش زنده منابع سرور</div>
-      <div class="stats">
-        <div class="stat-box">
-          <div>CPU</div>
-          <div style="font-weight:900;color:var(--cyan)" id="cpuVal">--</div>
-          <div class="progress-bg"><div id="cpuBar" class="progress-fill"></div></div>
+      <div style="font-weight:700;margin-bottom:8px;color:var(--cyan)">➕ ساخت کرون‌جاب جدید</div>
+      <input type="text" id="cronName" class="inp" placeholder="نام کرون‌جاب (مثلاً: اسکن روزانه)">
+      <input type="text" id="cronDesc" class="inp" placeholder="توضیحات جاب">
+      <div style="display:flex;gap:6px">
+        <input type="text" id="cronSchedule" class="inp" placeholder="0 6 * * *" style="direction:ltr;font-family:monospace">
+        <select class="inp" style="width:110px" onchange="document.getElementById('cronSchedule').value=this.value">
+          <option value="0 6 * * *">۶ صبح</option>
+          <option value="0 * * * *">هر ساعت</option>
+          <option value="*/15 * * * *">۱۵ دقیقه</option>
+        </select>
+      </div>
+      <button class="btn btn-cyan" onclick="addCron()">⚡ ثبت و ارسال زنده به هرمس</button>
+    </div>
+    <div class="glass">
+      <div style="font-weight:700;margin-bottom:8px">📋 لیست جاب‌های فعال و زمان‌بندی‌ها</div>
+      <div id="cronContainer">در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: CHAT MANAGEMENT -->
+  <div id="page-chat" class="page">
+    <div class="glass">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-weight:700;color:var(--purple)">💬 چت زنده با هرمس</span>
+        <button onclick="clearChat()" style="background:none;border:none;color:var(--red);font-size:10px;cursor:pointer">🧹 پاک‌سازی</button>
+      </div>
+      <div class="chat-box" id="chatBox"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="chatInput" class="inp" placeholder="پیام خود را بنویسید..." style="margin-bottom:0" onkeypress="if(event.key==='Enter')sendChat()">
+        <button class="btn btn-cyan" style="width:70px" onclick="sendChat()">ارسال</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: SYSTEM MONITORING -->
+  <div id="page-system" class="page">
+    <div class="glass">
+      <div style="font-weight:700;margin-bottom:10px">📊 پایش زنده منابع Gateway</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div>CPU</div><div style="font-weight:900;color:var(--cyan)" id="cpuVal">0%</div>
+          <div class="bar-bg"><div id="cpuBar" class="bar-fill"></div></div>
         </div>
-        <div class="stat-box">
-          <div>RAM</div>
-          <div style="font-weight:900;color:var(--green)" id="ramVal">--</div>
-          <div class="progress-bg"><div id="ramBar" class="progress-fill" style="background:var(--green)"></div></div>
+        <div class="stat-card">
+          <div>RAM</div><div style="font-weight:900;color:var(--green)" id="ramVal">0%</div>
+          <div class="bar-bg"><div id="ramBar" class="bar-fill" style="background:var(--green)"></div></div>
         </div>
-        <div class="stat-box">
-          <div>DISK</div>
-          <div style="font-weight:900;color:var(--purple)" id="diskVal">--</div>
-          <div class="progress-bg"><div id="diskBar" class="progress-fill" style="background:var(--purple)"></div></div>
+        <div class="stat-card">
+          <div>DISK</div><div style="font-weight:900;color:var(--purple)" id="diskVal">0%</div>
+          <div class="bar-bg"><div id="diskBar" class="bar-fill" style="background:var(--purple)"></div></div>
         </div>
       </div>
-      <div class="server-info" id="serverInfo">
-        <div class="info-item">Uptime: <span id="uptimeVal">--</span></div>
-        <div class="info-item">Load: <span id="loadVal">--</span></div>
-        <div class="info-item">RAM: <span id="ramInfo">--</span></div>
-        <div class="info-item">Disk: <span id="diskInfo">--</span></div>
-      </div>
-    </div>
-
-    <div class="glass">
-      <div class="section-title">🔍 وضعیت هرمس</div>
-      <div id="hermesStatus" style="font-size:11px;color:#888">در حال بررسی...</div>
-    </div>
-  </div>
-
-  <!-- TAB: EDITOR -->
-  <div id="tab-editor" class="tab-content" style="display:none">
-    <div class="glass">
-      <div class="section-title">📝 ادیتور پایتون</div>
-      <input type="text" id="scriptName" class="inp" value="test_script.py" style="direction:ltr;color:var(--cyan)" placeholder="نام فایل">
-      <textarea id="codeBody" class="code-box" placeholder="# Write Python code here...
-print('Hello from Hermes Gateway!')
-print('CPU:', 2+2)"></textarea>
-      <button class="btn" style="margin-top:8px" onclick="deployScript()">⚡ اجرا روی سرور</button>
-      <div class="console" id="consoleOut">> آماده برای deployment...</div>
-    </div>
-  </div>
-
-  <!-- TAB: LOGS -->
-  <div id="tab-logs" class="tab-content" style="display:none">
-    <div class="glass">
-      <div class="section-title">📟 لاگ‌های Gateway</div>
-      <div style="display:flex;gap:6px;margin-bottom:8px">
-        <input type="number" id="logLines" class="inp" value="30" min="5" max="100" style="width:80px;text-align:center;color:var(--cyan)">
-        <button class="btn" style="width:auto;padding:8px 16px" onclick="fetchLogs()">🔄 بروزرسانی</button>
-      </div>
-      <div class="console" id="logConsole" style="height:300px">در حال بارگذاری لاگ‌ها...</div>
-    </div>
-  </div>
-
-  <!-- TAB: CRON -->
-  <div id="tab-cron" class="tab-content" style="display:none">
-    <div class="glass">
-      <div class="section-title">⏰ ثبت کرون‌جاب جدید</div>
-      <input type="text" id="cronName" class="inp" placeholder="نام جاب (مثلاً: backup)">
-      <input type="text" id="cronSchedule" class="inp" placeholder="زمان‌بندی (مثلاً: 0 */6 * * *)" style="direction:ltr;color:var(--yellow)">
-      <input type="text" id="cronCommand" class="inp" placeholder="دستور (مثلاً: python3 backup.py)" style="direction:ltr;color:var(--green)">
-      <button class="btn" style="margin-top:8px" onclick="createCron()">➕ ثبت جاب</button>
-      <div class="console" id="cronConsole" style="height:60px">> آماده...</div>
-    </div>
-    <div class="glass">
-      <div class="section-title">📋 کرون‌جاب‌های فعال</div>
-      <div id="cronList">در حال بارگذاری...</div>
     </div>
   </div>
 
 </div>
 
 <script>
-// ── آدرس API (گیت‌وی هرمس) ──────────────────────────────────────
-// ⚠️ آدرس سرور خودت رو اینجا بگذار:
-const GATEWAY_URL = "https://diving-wesley-baseline-cheap.trycloudflare.com";
-// ────────────────────────────────────────────────────────────────
+const GATEWAY = "https://permission-everyday-reserves-mouse.trycloudflare.com";
 
 var tg = window.Telegram && window.Telegram.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
+if(tg){tg.ready();tg.expand();}
 
-// ── تب‌ها ──────────────────────────────────────────────────────
-function switchTab(name) {
-    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-    document.getElementById('tab-' + name).style.display = 'block';
-    event.target.classList.add('active');
-    if (name === 'logs') fetchLogs();
-    if (name === 'cron') fetchCrons();
+function switchTab(tab, el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.getElementById('page-'+tab).classList.add('active');
+  el.classList.add('active');
 }
 
-// ── 1. آمار سیستم ─────────────────────────────────────────────
-async function fetchStats() {
-    try {
-        const res = await fetch(GATEWAY_URL + '/api/v1/system/stats');
-        const d = await res.json();
-        
-        document.getElementById('cpuVal').textContent = d.cpu_percent + '%';
-        document.getElementById('cpuBar').style.width = d.cpu_percent + '%';
-        if (d.cpu_percent > 80) document.getElementById('cpuBar').style.background = 'var(--red)';
-        
-        document.getElementById('ramVal').textContent = d.ram_percent + '%';
-        document.getElementById('ramBar').style.width = d.ram_percent + '%';
-        
-        document.getElementById('diskVal').textContent = d.disk_percent + '%';
-        document.getElementById('diskBar').style.width = d.disk_percent + '%';
-        
-        document.getElementById('uptimeVal').textContent = d.uptime || '--';
-        document.getElementById('loadVal').textContent = d.load_avg ? d.load_avg[0].toFixed(2) : '--';
-        document.getElementById('ramInfo').textContent = d.ram_used_gb + '/' + d.ram_total_gb + ' GB';
-        document.getElementById('diskInfo').textContent = d.disk_used_gb + '/' + d.disk_total_gb + ' GB';
-        
-        document.getElementById('syncStatus').textContent = '● LIVE';
-        document.getElementById('syncStatus').style.color = 'var(--green)';
-        document.getElementById('statusDot').className = 'pulse';
-    } catch (e) {
-        document.getElementById('syncStatus').textContent = '● OFFLINE';
-        document.getElementById('syncStatus').style.color = 'var(--red)';
-        document.getElementById('statusDot').className = 'pulse offline';
+async function fetchCrons(){
+  try{
+    const res = await fetch(GATEWAY + '/api/v1/cron/list');
+    const data = await res.json();
+    const c = document.getElementById('cronContainer');
+    c.innerHTML = '';
+    if(data.crons.length === 0){
+      c.innerHTML = '<div style="color:#666;text-align:center;padding:10px">هیچ کرون‌جابی ثبت نشده است.</div>';
+      return;
     }
+    data.crons.forEach(function(job){
+      var isAct = job.status === 'active';
+      var badgeClass = isAct ? 'badge-active' : 'badge-disabled';
+      var badgeText = isAct ? 'فعال' : 'متوقف';
+      var toggleBg = isAct ? 'rgba(255,0,85,.2)' : 'rgba(0,255,136,.2)';
+      var toggleColor = isAct ? 'var(--red)' : 'var(--green)';
+      var toggleText = isAct ? 'توقف' : 'فعال‌سازی';
+      c.innerHTML += '<div class="cron-card"><div><div style="font-weight:700">' + job.name + ' <span class="badge ' + badgeClass + '">' + badgeText + '</span></div><div style="font-size:9px;color:#888;margin-top:2px">' + job.description + '</div><div style="font-size:9px;color:var(--cyan);font-family:monospace;direction:ltr;text-align:right;margin-top:2px">' + job.schedule + '</div></div><div style="display:flex;gap:4px"><button class="btn" style="width:auto;padding:4px 8px;font-size:9px;background:' + toggleBg + ';color:' + toggleColor + '" onclick="toggleCron(\'' + job.name + '\',\'toggle\')">' + toggleText + '</button><button class="btn btn-red" style="width:auto;padding:4px 8px;font-size:9px" onclick="toggleCron(\'' + job.name + '\',\'delete\')">حذف</button></div></div>';
+    });
+  }catch(e){}
 }
 
-// ── 2. وضعیت هرمس ─────────────────────────────────────────────
-async function fetchHermesStatus() {
-    try {
-        const res = await fetch(GATEWAY_URL + '/api/v1/hermes/status');
-        const d = await res.json();
-        const el = document.getElementById('hermesStatus');
-        if (d.status === 'healthy') {
-            el.innerHTML = '<span style="color:var(--green)">✅ Gateway در حال اجراست</span><br>' +
-                '<span style="color:#666">Home: ' + d.hermes_home + '</span>';
-        } else {
-            el.innerHTML = '<span style="color:var(--red)">❌ Gateway متوقف است</span>';
-        }
-    } catch (e) {
-        document.getElementById('hermesStatus').innerHTML = '<span style="color:var(--red)">⚠️ سرور در دسترس نیست</span>';
-    }
+async function addCron(){
+  var name = document.getElementById('cronName').value;
+  var description = document.getElementById('cronDesc').value;
+  var schedule = document.getElementById('cronSchedule').value;
+  if(!name || !schedule) return alert('نام و زمان‌بندی الزامی است.');
+  await fetch(GATEWAY + '/api/v1/cron/add', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name: name, description: description, schedule: schedule, command: ''})
+  });
+  document.getElementById('cronName').value = '';
+  document.getElementById('cronDesc').value = '';
+  fetchCrons();
 }
 
-// ── 3. اجرای اسکریپت ──────────────────────────────────────────
-async function deployScript() {
-    var filename = document.getElementById('scriptName').value;
-    var code = document.getElementById('codeBody').value;
-    var out = document.getElementById('consoleOut');
-    
-    out.textContent = '> Sending to Gateway...';
-    
-    try {
-        var res = await fetch(GATEWAY_URL + '/api/v1/script/deploy', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({filename: filename, code: code})
-        });
-        var d = await res.json();
-        
-        if (d.status === 'success') {
-            out.innerHTML = '<span style="color:var(--green)">[SUCCESS]</span> File: ' + d.file + '\n\n' + (d.output || 'No output.');
-        } else {
-            out.innerHTML = '<span style="color:var(--red)">[ERROR]</span> ' + (d.detail || d.output || 'Unknown error');
-        }
-    } catch (e) {
-        out.innerHTML = '<span style="color:var(--red)">[NETWORK ERROR]</span> Gateway unreachable\n' + e.message;
-    }
+async function toggleCron(name, action){
+  await fetch(GATEWAY + '/api/v1/cron/toggle', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name: name, action: action})
+  });
+  fetchCrons();
 }
 
-// ── 4. لاگ‌ها ──────────────────────────────────────────────────
-async function fetchLogs() {
-    var lines = document.getElementById('logLines').value || 30;
-    try {
-        var res = await fetch(GATEWAY_URL + '/api/v1/system/logs?lines=' + lines);
-        var d = await res.json();
-        document.getElementById('logConsole').textContent = d.logs.join('\n');
-        // اسکرول به پایین
-        var el = document.getElementById('logConsole');
-        el.scrollTop = el.scrollHeight;
-    } catch (e) {
-        document.getElementById('logConsole').textContent = '⚠️ Could not fetch logs';
-    }
+async function fetchChats(){
+  try{
+    var res = await fetch(GATEWAY + '/api/v1/chat/messages');
+    var data = await res.json();
+    var box = document.getElementById('chatBox');
+    box.innerHTML = '';
+    data.messages.forEach(function(m){
+      var isH = m.sender === 'hermes';
+      var cls = isH ? 'msg-hermes' : 'msg-user';
+      box.innerHTML += '<div class="msg ' + cls + '"><div>' + m.text + '</div><div class="msg-time">' + m.time + '</div></div>';
+    });
+    box.scrollTop = box.scrollHeight;
+  }catch(e){}
 }
 
-// ── 5. کرون‌جاب ────────────────────────────────────────────────
-async function createCron() {
-    var name = document.getElementById('cronName').value;
-    var schedule = document.getElementById('cronSchedule').value;
-    var command = document.getElementById('cronCommand').value;
-    var out = document.getElementById('cronConsole');
-    
-    if (!name || !schedule || !command) {
-        out.textContent = '> ⚠️ All fields required';
-        return;
-    }
-    
-    try {
-        var res = await fetch(GATEWAY_URL + '/api/v1/cron/create', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name: name, schedule: schedule, command: command})
-        });
-        var d = await res.json();
-        out.textContent = '> ' + (d.message || d.detail || 'Done');
-        fetchCrons();
-    } catch (e) {
-        out.textContent = '> ⚠️ Error: ' + e.message;
-    }
+async function sendChat(){
+  var inp = document.getElementById('chatInput');
+  if(!inp.value.trim()) return;
+  var text = inp.value;
+  inp.value = '';
+  await fetch(GATEWAY + '/api/v1/chat/send', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({sender: 'user', text: text})
+  });
+  fetchChats();
 }
 
-async function fetchCrons() {
-    try {
-        var res = await fetch(GATEWAY_URL + '/api/v1/cron/list');
-        var d = await res.json();
-        var el = document.getElementById('cronList');
-        if (d.jobs.length === 0) {
-            el.innerHTML = '<div style="color:#666;text-align:center;padding:10px">هیچ جابی ثبت نشده</div>';
-            return;
-        }
-        el.innerHTML = d.jobs.map(function(j) {
-            var parts = j.split('# HERMES:');
-            var schedule = parts[0].trim();
-            var name = parts[1] || 'unnamed';
-            return '<div class="cron-item"><span class="name">' + name + '</span><span class="schedule">' + schedule + '</span></div>';
-        }).join('');
-    } catch (e) {
-        document.getElementById('cronList').innerHTML = '<div style="color:var(--red)">⚠️ Error loading cron jobs</div>';
-    }
+async function clearChat(){
+  await fetch(GATEWAY + '/api/v1/chat/clear', {method: 'POST'});
+  fetchChats();
 }
 
-// ── شروع ──────────────────────────────────────────────────────
+async function fetchStats(){
+  try{
+    var res = await fetch(GATEWAY + '/api/v1/stats');
+    var d = await res.json();
+    document.getElementById('cpuVal').textContent = d.cpu + '%';
+    document.getElementById('cpuBar').style.width = d.cpu + '%';
+    document.getElementById('ramVal').textContent = d.ram + '%';
+    document.getElementById('ramBar').style.width = d.ram + '%';
+    document.getElementById('diskVal').textContent = d.disk + '%';
+    document.getElementById('diskBar').style.width = d.disk + '%';
+    document.getElementById('syncStatus').textContent = '🟢 زنده (LIVE)';
+    document.getElementById('syncStatus').style.color = 'var(--green)';
+    document.getElementById('statusDot').className = 'pulse';
+  }catch(e){
+    document.getElementById('syncStatus').textContent = '🔴 قطع ارتباط';
+    document.getElementById('syncStatus').style.color = 'var(--red)';
+    document.getElementById('statusDot').className = 'pulse offline';
+  }
+}
+
+setInterval(fetchStats, 4000);
+setInterval(fetchCrons, 6000);
+setInterval(fetchChats, 3000);
 fetchStats();
-fetchHermesStatus();
-setInterval(fetchStats, 5000);
-setInterval(fetchHermesStatus, 15000);
+fetchCrons();
+fetchChats();
 </script>
 </body>
 </html>
